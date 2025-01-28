@@ -43,7 +43,7 @@ obj.t0      = OPTIONS.optional.TimeSegment(1);
 % ===== call of specific pre-processing depending on the pipeline:
 switch OPTIONS.mandatory.pipeline
     
-    case 'cMEM'  % === this is the standard MEM (Chowdhurry and Grova) =====
+    case {'cMEM','cMNE'}  % === this is the standard MEM (Chowdhurry and Grova) =====
         [noise_var] = covariance_processing(OPTIONS);
         % we nomalize the cov of each modalities (we regularize the cov matrices)
         for ii = 1 : numel( OPTIONS.automatic.Modality )

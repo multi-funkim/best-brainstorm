@@ -3,7 +3,8 @@ function [OPTIONS] = be_selected_coeff(WM, obj, OPTIONS)
 % Only the boxes in the temporal interval of interest (TimeSegment) are kept
 % (a box is kept if more than the half is included in the TimeSegment). 
 % Only the boxes in the selected scale are kept.
-% A maximum of 99% of the energy is kept.
+% A maximum of 99% of the energy is kept. (except for nirs - keeping all the
+% power)
 
 % NOTES:
 %     - This function is not optimized for stand-alone command calls.
@@ -20,7 +21,7 @@ function [OPTIONS] = be_selected_coeff(WM, obj, OPTIONS)
 %                           with the seleted wavelet coefficients
 %
 %
-%% ==============================================   wavelet
+%% ==============================================
 % Copyright (C) 2012 - LATIS Team
 %
 %  Authors: LATIS, 2012
@@ -52,17 +53,16 @@ nbc = size(WM{1},1);
 % time t0 in the extended data
 fs = OPTIONS.automatic.sampling_rate;
 t0_extended = obj.t0 - (obj.info_extension.start -1)/fs;
-% if OPTIONS.optional.verbose
-%     disp(nbl)
-%     disp(nbb)
-%     disp(nbc)
-%     disp(t0_extended)
-% end
 
 % === Table of selection
 selected_jk = struct([]);
-% we keep 99pc of power
-pc_power = 0.99;
+
+% we keep 99pc of power for EEG/MEG, 100% of power for fNIRS
+if any(strcmp(OPTIONS.mandatory.DataTypes,'NIRS'))
+    pc_power    = 1;
+else
+    pc_power    = 0.99;
+end
 
 for jj = 1 : length(OPTIONS.mandatory.DataTypes)
     i_kept = [];

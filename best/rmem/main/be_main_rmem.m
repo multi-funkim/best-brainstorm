@@ -45,7 +45,9 @@ function [obj, OPTIONS] = be_main_MEM(obj, OPTIONS)
                 end
                 new_obj.data            =   new_obj.idata;
             	obj.ImageGridAmp        =   obj.ImageGridAmp + 1i * be_launch_mem(new_obj, OPTIONS);
-        	end
+            end
+
+            [obj, OPTIONS] = be_unormalize_and_units(obj, OPTIONS);
 	else
 		disp('ERROR in calling rMEM'); return
 	end

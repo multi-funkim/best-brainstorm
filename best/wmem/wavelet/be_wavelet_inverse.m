@@ -37,13 +37,14 @@ if strcmp(OPTIONS.wavelet.type,'RDW')
     end
     
     if OPTIONS.wavelet.vanish_moments == 0
-    filtre = MakeONFilter('Haar');
+        filtre = MakeONFilter('Haar');
     else
-    filtre = MakeONFilter('Daubechies',2*OPTIONS.wavelet.vanish_moments+2);
+        filtre = MakeONFilter('Daubechies',2*OPTIONS.wavelet.vanish_moments+2);
     end
+
     Nj = fix(log2(No));
     Noff = Nj-size(OPTIONS.automatic.scales,2);
-    Data = zeros(Ns,No);
+    Data = zeros(Ns,No, 'like', WData);
     for i = 1:Ns
         Data(i,:) = IWT_PO(WData(i,:),Noff,filtre);
     end
@@ -60,16 +61,18 @@ elseif strcmp(OPTIONS.wavelet.type,'rdw')
     end
  
     if OPTIONS.wavelet.vanish_moments > 7
-    filtre = 'rdw0';
+        filtre = 'rdw0';
     else
-    filtre = ['rdw' num2str(OPTIONS.wavelet.vanish_moments)];
+        filtre = ['rdw' num2str(OPTIONS.wavelet.vanish_moments)];
     end
     
     Njs  = size(OPTIONS.automatic.scales,2);
-    Data = zeros(Ns,No);
+    
+    Data = zeros(Ns,No, 'like', WData);
     for i = 1:Ns
-        Data(i,:) =  be_dwsynthesis(WData(i,:), Njs, filtre);
+        Data(i,:) =  be_dwsynthesis(full(WData(i,:)), Njs, filtre);
     end
+    
 
     if OPTIONS.optional.verbose
         fprintf(' done.\n');

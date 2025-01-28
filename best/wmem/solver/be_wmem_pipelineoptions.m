@@ -43,7 +43,8 @@ function DEF = be_wmem_pipelineoptions(DataTypes)
         DEF.solver.spatial_smoothing    = 0.6;
         DEF.solver.Optim_method         = 'fminunc';
         DEF.solver.NoiseCov_method      = 6;
-        
+        DEF.solver.mne_use_noiseCov     = 0;
+
         % optional
         DEF.optional.normalization      = 'fixed'; 
         DEF.optional.baseline_shuffle   = 0;

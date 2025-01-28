@@ -757,8 +757,8 @@ function [bstPanelNew, panelName] = CreatePanel(OPTIONS,varargin)  %#ok<DEFNU>
         jTxtAlMet  = JTextField( num2str(OPTIONS.model.alpha_method) );
         jTxtAlMet.setPreferredSize(Dimension(TEXT_WIDTH, DEFAULT_HEIGHT));
         jTxtAlMet.setHorizontalAlignment(JTextField.RIGHT);
-        jTxtAlMet.setToolTipText('<HTML><B>Initialization of cluster k''s active probability (&alpha)</B>:<BR>1 = average MSP scores (&alpha<sub>k</sub> = mean(MSP<sub>k</sub>))<BR>2 = max MSP scores (&alpha<sub>k</sub> = max(MSP<sub>k</sub>))<BR>3 = median MSP scores (&alpha<sub>k</sub> = mean(MSP<sub>k</sub>))<BR>4 = equal (&alpha = 0.5)<BR>5 = equal (&alpha = 1)<BR>6 = % of MNE Energy</HTML>');
-        java_setcb(jTxtMuMet, 'ActionPerformedCallback', @(h,ev)adjust_range('jTxtMuMet', [1 6]) );
+        jTxtAlMet.setToolTipText('<HTML><B>Initialization of cluster k''s active probability (&alpha)</B>:<BR>1 = average MSP scores (&alpha<sub>k</sub> = mean(MSP<sub>k</sub>))<BR>2 = max MSP scores (&alpha<sub>k</sub> = max(MSP<sub>k</sub>))<BR>3 = median MSP scores (&alpha<sub>k</sub> = mean(MSP<sub>k</sub>))<BR>4 = equal (&alpha = 0.5)<BR>5 = equal (&alpha = 1)<BR>6 = % of MNE Energy<BR>7 = % of MNE Energy (using l-curve)</HTML>');
+        java_setcb(jTxtMuMet, 'ActionPerformedCallback', @(h,ev)adjust_range('jTxtMuMet', [1 7]) );
         jPanel.add('p left', JLabel('Active probability intialization') );
         jPanel.add('tab', jTxtAlMet);
 

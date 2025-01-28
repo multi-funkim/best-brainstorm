@@ -42,8 +42,9 @@ function [hp,hptab] = be_display_time_scale_boxes(obj,OPTIONS)
 
 
 warning('off','all');
-hp = figure;
-hptab = uitabgroup; drawnow;
+hp      = obj.hfig;
+hptab   = obj.hfigtab; 
+
 if ~strcmp(obj.data_type,'discrete_wavelet')
     disp('NO WAVELET DISPLAY');
     return
@@ -116,6 +117,6 @@ for ii = 1:length(OPTIONS.mandatory.DataTypes)
     end
     
     pause(3)
-    
 end
-return
+
+end

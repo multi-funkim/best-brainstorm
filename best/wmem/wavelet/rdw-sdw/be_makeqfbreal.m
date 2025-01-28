@@ -1,4 +1,4 @@
-function [analF analG synF synG Jcase] = be_makeqfbreal(filtre)
+function [analF, analG, synF, synG, Jcase] = be_makeqfbreal(filtre)
 % Real SDW Filter bank construction
 % Ref: JM Lina, Journ. Math. of Vision (1995)
 %
@@ -38,4 +38,4 @@ function [analF analG synF synG Jcase] = be_makeqfbreal(filtre)
     analF=filtre.H(end:-1:1);
     synF=analF;
     synG=analG;
-    
+end

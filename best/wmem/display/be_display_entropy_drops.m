@@ -44,6 +44,10 @@ warning('off','all');
     'outerPosition',[0.01 0.01 0.98 0.98]);
    
     plot(ax,log(abs(OPTIONS.automatic.entropy_drops)),'-k','linewidth',2);
-    xlabel(ax,'wavelet coefficient (descreasing energy)'); 
+    if contains(OPTIONS.mandatory.pipeline,{'cMEM','cMNE'})
+        xlabel(ax,'time (s)'); 
+    else
+        xlabel(ax,'wavelet coefficient (descreasing energy)'); 
+    end
     ylabel(ax,'log(|entropy|)'); 
 return

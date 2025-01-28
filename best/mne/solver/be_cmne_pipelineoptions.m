@@ -1,4 +1,4 @@
-function DEF = be_cmem_pipelineoptions(DataTypes)
+function DEF = be_cmne_pipelineoptions(DataTypes)
 
         if nargin < 1 || isempty(DataTypes)
             DataTypes = {'EEG'};
@@ -6,19 +6,16 @@ function DEF = be_cmem_pipelineoptions(DataTypes)
 
         % clustering
         DEF.clustering.clusters_type     	= 'static';
-        DEF.clustering.MSP_window         	= 1;
-        DEF.clustering.MSP_scores_threshold = 0.0;
-        
+        DEF.solver.mne_method               = 'mne_lcurve';
+
         DEF.model.alpha_threshold          	= 0.0;
         DEF.model.active_mean_method      	= 2;
         DEF.model.alpha_method              = 3;
 
         if any(ismember( 'NIRS', DataTypes))
             DEF.model.depth_weigth_MNE          = 0.3;
-            DEF.model.depth_weigth_MEM          = 0.3;
         else
             DEF.model.depth_weigth_MNE          = 0.5;
-            DEF.model.depth_weigth_MEM          = 0.5;
         end
 
 
@@ -27,9 +24,9 @@ function DEF = be_cmem_pipelineoptions(DataTypes)
         
         % solver
         DEF.solver.NoiseCov_method           = 2;
-        DEF.solver.mne_use_noiseCov          = 0;
+        DEF.solver.mne_use_noiseCov          = 1;
 
         % optional
-        DEF.optional.normalization           = 'adaptive'; 
+        DEF.optional.normalization           = 'fixed'; 
 
 end

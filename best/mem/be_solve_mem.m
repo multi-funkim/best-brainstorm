@@ -1,4 +1,4 @@
-function [J, varargout] = be_solve_mem(mem_struct)
+function [J, results] = be_solve_mem(mem_struct)
 %SOLVE_MEM solves the MEM inverse problem
 %   J = SOLVE_MEM(MEM_STRUCT) solves the MEM inverse problem and
 %   returns the activations in J. MEM_STRUCT is a structure with the
@@ -47,8 +47,7 @@ function [J, varargout] = be_solve_mem(mem_struct)
 
 % Initialization
 nb_clusters = numel(mem_struct.clusters);
-nb_sources = mem_struct.nb_sources;
-J = zeros(1, nb_sources);
+nb_sources  = mem_struct.nb_sources;
 
 % MINIMIZING THE FREE ENERGY
 % We save the OPTIMAL LAMBDA (LAMBDA*) in the MEM_STRUCT.
@@ -63,21 +62,16 @@ J = zeros(1, nb_sources);
 
 
 % GENERATING AMPLITUDES
-% multiplying the active mean times the active probability will generate
-% the estimated amplitude
+J = zeros(1, nb_sources);
 for ii = 1 : nb_clusters
     J(mem_struct.clusters(ii).indices) = active_amp{ii};
 end
 
-if nargout == 2
+if nargout >= 2
     results.iterations         = iter;
     results.lambda             = mem_struct.lambda;
     results.entropy            = entropy;
     results.active_probability = active_probability;
-    varargout{1}               = results;
 end
 
-return
-
-
-%
+end
