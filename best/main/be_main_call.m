@@ -258,6 +258,7 @@ Def_OPTIONS.model.depth_weigth_MEM              = 0;
 % MEM solver
 Def_OPTIONS.solver.NoiseCov                     = [];
 Def_OPTIONS.solver.NoiseCov_method              = [];
+Def_OPTIONS.solver.mne_use_noiseCov             = 0;
 Def_OPTIONS.solver.NoiseCov_recompute           = 1;
 Def_OPTIONS.solver.spatial_smoothing            = 0.6;
 Def_OPTIONS.solver.active_var_mult              = 0.05;

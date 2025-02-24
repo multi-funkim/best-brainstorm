@@ -95,7 +95,8 @@ if OPTIONS.optional.verbose
 end        
         
 %% Useful variables
- obj = struct('hfig', [] , 'hfigtab', [],  'ImageGridAmp', []);
+obj = struct('ImageGridAmp', []);
+[obj.hfig, obj.hfigtab] = be_create_figure(OPTIONS);
 
 if ~isfield(HeadModel, 'vertex_connectivity')
     [OPTIONS, obj.VertConn] = be_vertex_connectivity(HeadModel, OPTIONS);
@@ -141,7 +142,7 @@ end
 %% ===== Normalization ==== %% 
 % we absorb units (pT, nA) in the data, leadfields; we normalize the data
 % and the leadfields
-[OPTIONS] = be_normalize_and_units(OPTIONS);
+[OPTIONS, obj] = be_normalize_and_units(obj, OPTIONS);
 
 %% ===== Null hypothesis (for the threshold for the msp scores)
 % from the baseline, compute the distribution of the msp scores. 
@@ -173,19 +174,49 @@ end
 % matrix W'W from the Henson paper
 [OPTIONS, obj.GreenM2] = be_spatial_priorw( OPTIONS, obj.VertConn);
 
+%% ===== Fuse modalities ===== %%   
+obj = be_fusion_of_modalities(obj, OPTIONS);
+
 %% ===== Solve the MEM ===== %%
-% the main inverse process
-[obj, OPTIONS] = be_main_wmem(obj, OPTIONS);
+[obj.ImageGridAmp, OPTIONS] = be_launch_mem(obj, OPTIONS);
 if OPTIONS.optional.display
     be_display_entropy_drops(obj,OPTIONS);
 end
 
-% Results (full temporal sequence)
+%% ===== Un-Normalization  ===== %%
+[obj, OPTIONS] = be_unormalize_and_units(obj, OPTIONS);
+
+%% Conversion to time-series
+if ~OPTIONS.wavelet.single_box
+    inv_proj = be_wavelet_inverse_projection(obj,OPTIONS);
+    obj.ImageGridAmp = {obj.ImageGridAmp, inv_proj};
+end
+
+%% ===== Update Comment ===== %%
+OPTIONS.automatic.Comment = [OPTIONS.automatic.Comment ' DWT(j' num2str(OPTIONS.wavelet.selected_scales) ')'];
+
+% Clean up options
+OPTIONS.automatic    = struct(  'entropy_drops', OPTIONS.automatic.entropy_drops, ... 
+                                'final_alpha', {OPTIONS.automatic.final_alpha}, ...
+                                'Comment', OPTIONS.automatic.Comment, ...
+                                'initial_alpha', obj.ALPHA, ...
+                                'clusters', obj.CLS, ...
+                                'selected_samples', OPTIONS.automatic.selected_samples, ... 
+                                'info_extension', obj.info_extension, ...
+                                'minimum_norm',OPTIONS.automatic.Modality(1).Jmne, ...
+                                'wActivation', OPTIONS.automatic.wActivation, ....
+                                'MSP',obj.SCR);   
+
+% Results
 Results = struct(...
-    'ImageGridAmp',     obj.ImageGridAmp, ...
+    'ImageGridAmp',     [], ... 
     'ImagingKernel',    [], ...
-    'MEMoptions',       OPTIONS, ...
-    'MEMdata',          obj);
+    'nComponents',      round( length(obj.iModS) / obj.nb_sources ), ...
+    'MEMoptions',       OPTIONS);
+
+% Save results as factor decomposition
+Results.ImageGridAmp = obj.ImageGridAmp;
+
 
 disp('Bye.')
 end

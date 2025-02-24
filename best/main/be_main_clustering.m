@@ -53,15 +53,15 @@ elseif ~isfield(OPTIONS.optional.clustering, 'initial_alpha')
     % rmem
     switch OPTIONS.mandatory.pipeline
         case 'cMEM'
-            [CLS, SCR, OPTIONS] = be_cmem_clusterize_multim(obj, OPTIONS); %TO DO: CHECK IF DATA SHOULD BE MINUS BSL OR NOT
+            [CLS, SCR, OPTIONS] = be_cmem_clusterize_multim(obj, OPTIONS); 
             [ALPHA, CLS, OPTIONS]   = be_scores2alpha(SCR, CLS, OPTIONS);
         case 'wMEM'
             [CLS, SCR, OPTIONS] = be_wmem_clusterize_multim(obj, OPTIONS);
 
-            if OPTIONS.model.alpha_method ~= 6
+            if OPTIONS.model.alpha_method < 6
                 [ALPHA, CLS, OPTIONS] = be_scores2alpha(SCR, CLS, OPTIONS);
             else % We compute the score using MNE
-                [ALPHA, CLS, OPTIONS] = be_gain2alpha(obj , CLS, OPTIONS);
+                [ALPHA, CLS, OPTIONS] = be_mne2alpha(obj , CLS, OPTIONS);
             end
 
         case 'rMEM'

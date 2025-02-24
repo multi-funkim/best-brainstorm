@@ -1,4 +1,4 @@
-function [J,varargout] = be_jmne_lcurve_MAP(G,M,OPTIONS, sfig)
+function [J,varargout] = be_jmne_lcurve_MAP(obj, OPTIONS, sfig)
 % Compute the minimum norm estimate using the Maximum a posteriori (MAP) formula
 % The regularization parameter is estiamted using l-curve. This approach is
 % equivalent to the regularized pseudo-inverse estimator in be_jmne_lcurve.
@@ -37,10 +37,13 @@ if nargin < 4
 end
 
 % selection of the data:
+M = obj.data;
 if ~isempty(OPTIONS.automatic.selected_samples)   
     selected_samples = OPTIONS.automatic.selected_samples(1,:);
     M = M(:,selected_samples);
 end
+
+G = obj.gain; 
 
 param1  = [0.1:0.1:1 1:5:100 100:100:1000]; 
 p       = OPTIONS.model.depth_weigth_MNE;

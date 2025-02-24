@@ -1,4 +1,4 @@
-function [OPTIONS] = be_normalize_and_units(OPTIONS)
+function [OPTIONS, obj] = be_normalize_and_units(obj, OPTIONS)
 %BE_NORMALIZE_UNITS normalizes leadfield, baseline and data units to enhance numerical computations
 %
 %   INPUTS:
@@ -52,6 +52,15 @@ for ii = 1 : numel(OPTIONS.mandatory.DataTypes) %For every Modality (Data Type)
     OPTIONS.automatic.Modality(ii).covariance   =   OPTIONS.automatic.Modality(ii).covariance/(MSD^2);
 end
 
+
+if strcmp(OPTIONS.optional.normalization,'adaptive') ||  strcmp(OPTIONS.mandatory.pipeline, 'cMEM')
+    %% ===== Compute Minimum Norm Solution ==== %% 
+    % we compute MNE (using l-curve for nirs or depth-weighted version)
+
+    [obj, OPTIONS] = be_main_mne(obj, OPTIONS);
+
+end
+
 %% Normalization on units
 switch OPTIONS.optional.normalization
     
@@ -70,8 +79,13 @@ switch OPTIONS.optional.normalization
             OPTIONS.automatic.Modality(ii).units_dipoles        =   units_dipoles;
         end
     case 'adaptive'
-                
+
+        MNEAmp =  max(max(abs(OPTIONS.automatic.Modality(1).Jmne))); %Same for both modalities
         for ii  =   1 : numel(OPTIONS.mandatory.DataTypes)
+
+            OPTIONS.automatic.Modality(ii).Jmne = OPTIONS.automatic.Modality(ii).Jmne / MNEAmp;
+            OPTIONS.automatic.Modality(ii).MNEAmp = MNEAmp;
+        
             ratioAmp    = 1 / OPTIONS.automatic.Modality(ii).MNEAmp; %Same for every modalities
             ratioG      = 1 / max(max(OPTIONS.automatic.Modality(ii).gain));
 

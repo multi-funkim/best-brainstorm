@@ -51,13 +51,14 @@ if ~ismember(filter,filter_list)
     end
 end
 
-if filter(1)=='r' % Cas r�el
+if filter(1)=='r' % Cas reel
     reel_fil=1;
 end
+
 if reel_fil==1
-    [H0 G0 synF synG Jcase] = be_makeqfbreal(filter);
+    [H0, G0, synF, synG, Jcase] = be_makeqfbreal(filter);
 else
-    [var1 var2 H0 G0 Jcase] = be_makeqfb(filter);
+    [var1, var2, H0, G0, Jcase] = be_makeqfb(filter);
 end
 % data are 1xN or NcxN with N = power of 2
 flip = 0;

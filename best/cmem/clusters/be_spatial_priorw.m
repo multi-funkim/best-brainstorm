@@ -1,6 +1,6 @@
 function [OPTIONS, W] = be_spatial_priorw(OPTIONS, neighbors)
-%   This function returns the W Green matrix from which the local 
-%   covariance matrices will be obtained. 
+%   This function returns the W spatial filter matrix.
+%   The local covariance matrices can be obtained as C = W' * W
 %
 %   INUPTS:
 % 		- OPTIONS    	: structure of parameters
@@ -41,10 +41,10 @@ if (nargin == 0)
     OPTIONS = Def_OPTIONS;
     return
 end
+
 % Check field names of passed OPTIONS and fill missing ones with default values
 OPTIONS = be_struct_copy_fields(OPTIONS, Def_OPTIONS, {'solver'}, 0);
-clear Def_OPTIONS
-%%
+
 % Parameters:
 nb_vertices = size(OPTIONS.automatic.Modality(1).gain,2);
 rho = OPTIONS.solver.spatial_smoothing; % scalar that weight the adjacency matrix 
@@ -66,6 +66,5 @@ for i = 1:7
     A0 = rho/2*A0*A / (i+1);
 end
 W = W.*(W > exp(-8));
-W = W'*W; 
 
-return
+end

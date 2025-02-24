@@ -70,12 +70,15 @@ for ii = 1 : nb_clusters
     xi_trans = xi';                              
     
     % F0 is set to a dirac by default (omega=0).
-    if isempty(omega)
-        F0=0;
-    else
+    F0 = 0;
+    if ~isempty(omega)
         F0 = 1/2 * xi_trans * omega * xi;             
     end
-    F1 = 1/2 * xi_trans * sigma * xi + xi_trans * mu;
+
+    F1 = 1/2 * xi_trans * sigma * xi;
+    if ~isempty(mu)
+        F1 = F1 + xi_trans * mu;
+    end
     
     F = F0 - F1;
     
@@ -92,10 +95,19 @@ for ii = 1 : nb_clusters
     
     
     % Estimating amplitudes*
-    estimated_amp{ii} = estimated_alpha * mu + ...
-        ((1 - estimated_alpha) * omega * xi) + ...
-        estimated_alpha * sigma * xi;
+    estimated_amp{ii} = estimated_alpha * sigma * xi;
+
+    if ~isempty(mu)
+        estimated_amp{ii} = estimated_amp{ii}  + ...
+                             estimated_alpha * mu;
+    end
+
+    if ~isempty(omega)
+        estimated_amp{ii}  = estimated_amp{ii}  + ...
+                             ((1 - estimated_alpha) * omega * xi);
+    end
+
 end
 
-return
+end
 

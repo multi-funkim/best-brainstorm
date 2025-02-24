@@ -161,7 +161,7 @@ for ii = 1 : nNEWdata
     %% ===== Normalization ==== %% 
     % we absorb units (pT, nA) in the data, leadfields; we normalize the data
     % and the leadfields
-    [OPTIONS2] = be_normalize_and_units(OPTIONS2);
+    [OPTIONS2] = be_normalize_and_units(obj, OPTIONS2);
 
     %% ===== Noise estimation ===== %%   
 

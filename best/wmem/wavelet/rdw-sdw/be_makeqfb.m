@@ -1,4 +1,4 @@
-function [analF analG synF synG Jcase] = makeQFB(filtre)
+function [analF, analG, synF, synG, Jcase] = be_makeqfb(filtre)
 % Complex SDW Filter bank construction
 % Ref: JM Lina, Journ. Math. of Vision (1995)
 %
@@ -25,6 +25,7 @@ function [analF analG synF synG Jcase] = makeQFB(filtre)
 % -------------------------------------------------------------------------   
 
     load(['be_' filtre]);
+    
     filter_length = 2*filtre.J+2;
     analF = zeros(1,filter_length);
     analG = zeros(1,filter_length);
@@ -42,3 +43,4 @@ function [analF analG synF synG Jcase] = makeQFB(filtre)
        synG(k)  = -sg*re-sg*im*1i;
        sg       = -sg;
     end
+end

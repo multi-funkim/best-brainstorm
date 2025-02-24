@@ -48,15 +48,6 @@ alpha = zeros(size(SCR));
 ALPHA_METHOD = OPTIONS.model.alpha_method;
 alpha_threshold = OPTIONS.model.alpha_threshold;
 
-
-% Progress bar
-hmem = [];
-if numel(varargin)
-    hmem    = varargin{1}(1);
-    st      = varargin{1}(2);
-    dr      = varargin{1}(3);
-end
-
 for jj=1:size(SCR,2)
     clusters = CLS(:,jj);
     scores = SCR(:,jj);
@@ -94,11 +85,6 @@ for jj=1:size(SCR,2)
             curr_cls = curr_cls + 1;
         end
         
-        % update progress bar
-         if hmem
-             prg = round( (st + dr * (jj - 1 + ii/nb_clusters) / (size(SCR,2))) * 100 );
-             waitbar(prg/100, hmem, {[OPTIONS.automatic.InverseMethod, 'Step 1/2 : Running cortex parcellization ... ' num2str(prg) ' % done']});
-         end
     end
     
 end

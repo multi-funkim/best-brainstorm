@@ -51,7 +51,18 @@ function [Results, OPTIONS] = be_cmne_solver(HeadModel, OPTIONS, Results)
 if OPTIONS.optional.verbose
     fprintf('\n\n===== pipeline cMNE\n');
 end 
- obj = struct('hfig', [] , 'hfigtab', [] );
+
+obj = struct('hfig', [] , 'hfigtab', [] );
+[obj.hfig, obj.hfigtab] = be_create_figure(OPTIONS);
+
+ %% Retrieve vertex connectivity - needed for clustering
+[OPTIONS, obj.VertConn] = be_vertex_connectivity(HeadModel, OPTIONS);
+
+if isempty(OPTIONS.optional.clustering) && isempty(obj.VertConn) || diff(size(obj.VertConn))
+    fprintf('MEM error : no vertex connectivity matrix available.\n');
+    return
+end
+
 
 %% ===== Comment ===== %%
 OPTIONS.automatic.Comment       =   'cMNE';
@@ -83,12 +94,23 @@ end
 % check for a time segment to be localized
 [OPTIONS] = be_apply_window( OPTIONS, [] );
 
+
+%% ===== Noise estimation ===== %%   
+[OPTIONS, obj] = be_main_data_preprocessing(obj, OPTIONS);
+
+%% ===== Normalization ==== %% 
+% we absorb units (pT, nA) in the data, leadfields; we normalize the data
+% and the leadfields
+[OPTIONS, obj] = be_normalize_and_units(obj, OPTIONS);
+
 %% ===== Compute Minimum Norm Solution ==== %% 
-% we compute MNE (using l-curve for nirs or depth-weighted version)
-[obj, OPTIONS] = be_main_mne(obj, OPTIONS);
+[obj, OPTIONS] = be_main_mne(obj, OPTIONS, OPTIONS.solver.mne_method);
 
-obj.ImageGridAmp =  OPTIONS.automatic.Modality(1).Jmne * OPTIONS.automatic.Modality(1).MNEAmp;
+%% ===== Un-Normalization  ===== %%
+[obj, OPTIONS] = be_unormalize_and_units(obj, OPTIONS);
 
+%% ===== Results  ===== %%
+obj.ImageGridAmp =  OPTIONS.automatic.Modality(1).Jmne;
 [OPTIONS, obj] = be_apply_window( OPTIONS, obj );
 
              
